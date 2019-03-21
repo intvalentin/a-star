@@ -1,5 +1,5 @@
 import sys
-from tkinter import *
+import tkinter as tk
 from tkinter import messagebox
 import matplotlib.pyplot as plt
 import networkx as nx
@@ -21,7 +21,7 @@ def nextGraph():
             i=0
             try:
                 currentNode = listTables.get(listTables.curselection())
-            
+
             except Exception as e:
                 print(e)
                 messagebox.showwarning(
@@ -29,13 +29,14 @@ def nextGraph():
             while currentNode != '2.  Bucharest':
 
                 if DG.order() and i == 0:
+                    description.config(text='Current Node-> ' +str(currentNode)+'\n' +'Next Node to choose-> ')
                     a.cla()
                     DG.clear()
                     DG.add_node(listTables.get(listTables.curselection()))
                     nx.draw_networkx(DG, pos, ax=a)
                     a.axis('off')
                     canvas.draw()
-                    time.sleep(2)
+                    time.sleep(1.5)
                     i+=1
                 else:
                     nodeNumber = currentNode.split(". ")
@@ -50,19 +51,22 @@ def nextGraph():
                             nx.draw_networkx_edge_labels(DG,pos,edge_labels=nx.get_edge_attributes(DG,'weight'),font_color='red',edge_color='r',ax=a)
                             nx.draw_networkx(DG, pos, ax=a)
                             canvas.draw()
-                            time.sleep(1)
+
                             if nextNode[0][0] == 0:
                                 nextNode = [[datasetNames[y][0],x+int(datasetNames[y][1])]]
                                 print(nextNode)
-
+                                description.config(text=description.cget('text')+str(nextNode[0][0]+' Cost: '+str(nextNode[0][1])))
                             elif x+int(datasetNames[y][1])< nextNode[0][1]:
                                 nextNode = [[datasetNames[y][0],x+int(datasetNames[y][1])]]
                                 print(nextNode)
+                                description.config(text=description.cget('text')+' > '+str(nextNode[0][0]+' Cost: '+str(nextNode[0][1])))
+                            time.sleep(1.5)
                         y+=1
                     currentNode = nextNode[0][0]
                     print('currentNode : '+currentNode)
-
-
+                    description.config(text=description.cget('text')+'\n'+'Current Node-> ' +str(currentNode)+'\n' )
+                    if currentNode != '2.  Bucharest':
+                        description.config(text=description.cget('text')+'Next Node to choose-> ')
 
 
 
@@ -99,7 +103,7 @@ def resetGraph():
 if __name__ == '__main__':
 
 
-    root = Tk()
+    root = tk.Tk()
     root.config(background='white')
     root.geometry("1000x700")
 
@@ -107,11 +111,11 @@ if __name__ == '__main__':
     a = f.add_subplot(111)
     a.axis('off')
 
-    listTables = Listbox(root, height=30)
-    listTables.pack(side=LEFT)
-    # draw(listTables,a)
-    description= Label(master=root, width=100)
-    description.pack(side=TOP)
+    listTables = tk.Listbox(root, height=100)
+    listTables.pack(side=tk.LEFT)
+    # draw(listTables,a
+    description= tk.Label(master=root, width=100)
+    description.pack(side=tk.BOTTOM)
 
     #DataStart
     DG = nx.DiGraph()
@@ -149,7 +153,7 @@ if __name__ == '__main__':
 
     for x in range(20):
         name = datasetNames[x][0]
-        listTables.insert(END, datasetNames[x][0])
+        listTables.insert('end', datasetNames[x][0])
         i = 0
         for y in datasetCost[x]:
             if y != -1:
@@ -165,14 +169,14 @@ if __name__ == '__main__':
     # EndData
     canvas = FigureCanvasTkAgg(f, master=root)
     canvas.draw()
-    canvas.get_tk_widget().pack(side=RIGHT, fill=BOTH, expand=1)
-    b = Button(root, text="Start",command=nextGraph,width=10)
-    b.pack(side=TOP)
-    b = Button(root, text="Reset",command=resetGraph,width=10)
-    b.pack(side=TOP)
+    canvas.get_tk_widget().pack(side=tk.RIGHT, fill=tk.BOTH, expand=1)
+    bstart = tk.Button(root, text="Start",command=nextGraph,width=10)
+    bstart.pack(side=tk.TOP)
+    breset = tk.Button(root, text="Reset",command=resetGraph,width=10)
+    breset.pack(side=tk.TOP)
 
-    button = Button(master=root, text='Quit', command=_quit,width=10)
-    button.pack(side=TOP)
+    button = tk.Button(master=root, text='Quit', command=_quit,width=10)
+    button.pack(side=tk.TOP)
 
 
     root.mainloop()
