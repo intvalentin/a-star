@@ -21,7 +21,7 @@ def nextGraph():
             i=0
             try:
                 currentNode = listTables.get(listTables.curselection())
-                print("asd")
+            
             except Exception as e:
                 print(e)
                 messagebox.showwarning(
@@ -39,13 +39,13 @@ def nextGraph():
                     i+=1
                 else:
                     nodeNumber = currentNode.split(". ")
-                    # print(datasetCost[int(nodeNumber[0])-1])
+
                     y=0
                     for x in datasetCost[int(nodeNumber[0])-1]:
-                        # print('casca')
+
                         if x != -1:
                             DG.add_weighted_edges_from([(currentNode, datasetNames[y][0], x)],length=x)
-                            # print(datasetNames[y])
+
                             nx.draw_networkx_labels(DG,pos,ax=a)
                             nx.draw_networkx_edge_labels(DG,pos,edge_labels=nx.get_edge_attributes(DG,'weight'),font_color='red',edge_color='r',ax=a)
                             nx.draw_networkx(DG, pos, ax=a)
@@ -61,18 +61,7 @@ def nextGraph():
                         y+=1
                     currentNode = nextNode[0][0]
                     print('currentNode : '+currentNode)
-                    # a.cla()
-                    # DG.clear()
-                    # x=0
-                    # print(neighbors)
-                    # print(currentNode)
-                    # while x < len(neighbors):
-                    #     for y in datasetCost[x]:
-                    #         if y != -1:
-                    #             DG.add_weighted_edges_from([(currentNode, neighbors[x], y)])
 
-                        # x+=1
-                    # currentNode = "2. Bucharest"
 
 
 
