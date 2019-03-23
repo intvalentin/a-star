@@ -18,6 +18,8 @@ import time
 def nextGraph():
         try:
             nextNode=[[0,0]]
+            caca =0
+            previousNode = 'caca'
             i=0
             try:
                 currentNode = listTables.get(listTables.curselection())
@@ -26,8 +28,9 @@ def nextGraph():
                 print(e)
                 messagebox.showwarning(
                     'Error', "Please RESET the graph!")
-            while currentNode != '2.  Bucharest':
-
+            while currentNode != '2.  Bucharest' and caca<10:
+                caca+=1
+        #print(datasetCost[int(nodeNumber[0])-1])
                 if DG.order() and i == 0:
                     description.config(text='Current Node-> ' +str(currentNode)+'\n' +'Next Node to choose-> ')
                     a.cla()
@@ -36,12 +39,13 @@ def nextGraph():
                     nx.draw_networkx(DG, pos, ax=a)
                     a.axis('off')
                     canvas.draw()
-                    time.sleep(1.5)
+                    #time.sleep(1.5)
                     i+=1
                 else:
                     nodeNumber = currentNode.split(". ")
 
                     y=0
+
                     for x in datasetCost[int(nodeNumber[0])-1]:
 
                         if x != -1:
@@ -51,22 +55,27 @@ def nextGraph():
                             nx.draw_networkx_edge_labels(DG,pos,edge_labels=nx.get_edge_attributes(DG,'weight'),font_color='red',edge_color='r',ax=a)
                             nx.draw_networkx(DG, pos, ax=a)
                             canvas.draw()
-
-                            if nextNode[0][0] == 0:
+                            print('valiz'+str(nextNode[0][0]))
+                            if nextNode[0][0] == 0 and datasetNames[y][0] != previousNode:
                                 nextNode = [[datasetNames[y][0],x+int(datasetNames[y][1])]]
                                 print(nextNode)
                                 description.config(text=description.cget('text')+str(nextNode[0][0]+' Cost: '+str(nextNode[0][1])))
-                            elif x+int(datasetNames[y][1])< nextNode[0][1]:
+                            elif x+int(datasetNames[y][1])< nextNode[0][1] and datasetNames[y][0] != previousNode:
                                 nextNode = [[datasetNames[y][0],x+int(datasetNames[y][1])]]
                                 print(nextNode)
                                 description.config(text=description.cget('text')+' > '+str(nextNode[0][0]+' Cost: '+str(nextNode[0][1])))
-                            time.sleep(1.5)
+                            #time.sleep(1.5)
                         y+=1
+
+                    previousNode = currentNode
                     currentNode = nextNode[0][0]
+                    print('PN: '+str(previousNode)+' CN: '+str(currentNode))
                     print('currentNode : '+currentNode)
                     description.config(text=description.cget('text')+'\n'+'Current Node-> ' +str(currentNode)+'\n' )
                     if currentNode != '2.  Bucharest':
                         description.config(text=description.cget('text')+'Next Node to choose-> ')
+                    nextNode=[[0,0]]
+
 
 
 
