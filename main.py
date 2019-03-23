@@ -16,6 +16,7 @@ import time
 
 
 def nextGraph():
+        global SetWT
         try:
             nextNode=[[0,0]]
             edgeColorsAnimation = []
@@ -29,7 +30,9 @@ def nextGraph():
                 print(e)
                 messagebox.showwarning(
                     'Error', "Please RESET the graph!")
-            while True:
+
+            while 'Bucharest' not in currentNode:
+
                 if DG.order() and i == 0:
                     description.config(text='Current Node-> ' +str(currentNode)+'\n' +'Next Node to choose-> ')
                     a.cla()
@@ -52,9 +55,9 @@ def nextGraph():
                             DG.add_weighted_edges_from([(currentNode, datasetNames[y][0], x)],length=x)
                             nx.draw_networkx_edge_labels(DG,pos,edge_labels=nx.get_edge_attributes(DG,'weight'),font_color='red',ax=a)
                             if datasetNames[y][0] == previousNode:
-                                edgeColorsAnimation.append('g')
-                            else:
                                 edgeColorsAnimation.append('r')
+                            else:
+                                edgeColorsAnimation.append('b')
 
                             if nextNode[0][0] == 0 and datasetNames[y][0] != previousNode: #check if next node to choose allready exists
                                 nextNode = [[datasetNames[y][0],x+int(datasetNames[y][1])]]
@@ -65,18 +68,20 @@ def nextGraph():
 
                             nx.draw_networkx(DG, pos, ax=a,edge_color=edgeColorsAnimation)
                             canvas.draw()
-                            time.sleep(1)
+                            if SetWT == 1:
+                                time.sleep(1)
                         y+=1
 
                     previousNode = currentNode
                     currentNode = nextNode[0][0]
                     description.config(text=description.cget('text')+'\n'+'Current Node-> ' +str(currentNode)+'\n' )
-                    if currentNode != '2.  Bucharest':
+                    if 'Bucharest' not in currentNode:
                         description.config(text=description.cget('text')+'Next Node to choose-> ')
 
                     nextNode=[[0,0]]
-                    if currentNode == '2.  Bucharest':
-                        break
+                    if 'Bucharest' in currentNode:
+                        description.config(text=description.cget('text')+'Finish! ')
+
 
         except Exception as e:
             print(e)
@@ -101,22 +106,31 @@ def resetGraph():
                     DG.add_weighted_edges_from([(name, datasetNames[i][0], y)])
                 i+=1
         nx.draw_networkx_edge_labels(DG,pos,edge_labels=nx.get_edge_attributes(DG,'weight'),edge_color='r',ax=a)
-        nx.draw_networkx(DG, pos, ax=a,with_labels=False,edge_color='g')
+        nx.draw_networkx(DG, pos, ax=a,with_labels=False,edge_color='b')
         # for p in pos:  # raise text positions
         #     pos[p][1] += 0.07
         nx.draw_networkx_labels(DG,pos,ax=a)
         canvas.draw()
 
+def setTime():
+    global SetWT
+    if SetWT == 1:
+        SetWT = 0
+        btime.config(text="Enable WaitTime")
+    else:
+        SetWT = 1
+        btime.config(text="Disable WaitTime")
 
 
 if __name__ == '__main__':
-
+    global SetWT
+    SetWT = 1
 
     root = tk.Tk()
     root.config(background='white')
     root.geometry("1000x700")
 
-    f = Figure(figsize=(5, 4), dpi=100)
+    f = Figure(figsize=(6, 6), dpi=100)
     a = f.add_subplot(111)
     a.axis('off')
 
@@ -129,10 +143,10 @@ if __name__ == '__main__':
     #DataStart
     DG = nx.DiGraph()
     datasetNames =[
-        ['1. Arad',366]       ,['2. Bucharest', 0]    ,['3. Craiova', 160]    ,['4. Dobreta', 242]  ,['5. Eforie',161],
-        ['6. Fagaras ', 176]  ,['7. Giurgiu', 77]     ,['8. Hirsova', 151]    ,['9. Iasi', 226]     ,['10. Lugoj', 244],
-        ['11. Mehadia ', 241] ,['12. Neamt', 234]     ,['13. Oradea', 380]    ,['14. Pitest', 10]   ,['15. Ramnicu Vilcea', 193],
-        ['16. Sibiu ', 253]   ,['17. Timisoara', 392] ,['18. Urziceni', 80]   ,['19. Vaslui', 199]  ,['20. Zerind', 374]
+        ['1.  Arad [366]',366]     ,['2.  Bucharest', 0]   ,      ['3.  Craiova [160]', 160]  ,['4.  Dobreta [242]', 242] ,['5.  Eforie [161]',161],
+        ['6.  Fagaras [176]', 176] ,['7.  Giurgiu [77]', 77]    , ['8.  Hirsova [151]', 151]  ,['9.  Iasi [226]', 226]    ,['10. Lugoj [244]', 244],
+        ['11. Mehadia [241]', 241] ,['12. Neamt [234]', 234]     ,['13. Oradea [380]', 380]   ,['14. Pitesti [10]', 10]   ,['15. Ramnicu Vilcea [193]', 193],
+        ['16. Sibiu [253]', 253]   ,['17. Timisoara [392]', 392] ,['18. Urziceni [80]', 80]   ,['19. Vaslui [199]', 199]  ,['20. Zerind [374]', 374]
     ]
     nr =[1  ,2  ,3  ,4  ,5  ,6  ,7  ,8  ,9  ,10 ,11 ,12 ,13 ,14 ,15 ,16 ,17 ,18 ,19 ,20 ]
 
@@ -162,7 +176,7 @@ if __name__ == '__main__':
 
     for x in range(20):
         name = datasetNames[x][0]
-        listTables.insert('end', datasetNames[x][0]+' ['+str(datasetNames[x][1])+']')
+        listTables.insert('end', datasetNames[x][0])
         i = 0
         for y in datasetCost[x]:
             if y != -1:
@@ -170,10 +184,9 @@ if __name__ == '__main__':
             i+=1
 
 
-    pos = nx.spring_layout(DG,scale=10.20)
+    pos = nx.spring_layout(DG,scale=5.0)
     nx.draw_networkx_edge_labels(DG,pos,edge_labels=nx.get_edge_attributes(DG,'weight'),ax=a)
-
-    nx.draw_networkx(DG, pos,font_size=16, with_labels=False,edge_color='g',ax=a)
+    nx.draw_networkx(DG, pos,font_size=16, with_labels=False,edge_color='b',ax=a)
     # for p in pos:  # raise text positions
     #     pos[p][1] += 0.07
     nx.draw_networkx_labels(DG,pos,ax=a)
@@ -184,12 +197,14 @@ if __name__ == '__main__':
     canvas = FigureCanvasTkAgg(f, master=root)
     canvas.draw()
     canvas.get_tk_widget().pack(side=tk.RIGHT, fill=tk.BOTH, expand=1)
-    bstart = tk.Button(root, text="Start",command=nextGraph,width=10)
+    bstart = tk.Button(root, text="Start",command=nextGraph,width=13)
     bstart.pack(side=tk.TOP)
-    breset = tk.Button(root, text="Reset",command=resetGraph,width=10)
+    breset = tk.Button(root, text="Reset",command=resetGraph,width=13)
     breset.pack(side=tk.TOP)
 
-    button = tk.Button(master=root, text='Quit', command=_quit,width=10)
+    btime = tk.Button(master=root, text="Disable WaitTime",command=setTime,width=13)
+    btime.pack(side=tk.TOP)
+    button = tk.Button(master=root, text='Quit', command=_quit,width=13)
     button.pack(side=tk.TOP)
 
 
