@@ -120,7 +120,7 @@ if __name__ == '__main__':
     a = f.add_subplot(111)
     a.axis('off')
 
-    listTables = tk.Listbox(root, height=100)
+    listTables = tk.Listbox(root, height=100,width=25)
     listTables.pack(side=tk.LEFT)
     # draw(listTables,a
     description= tk.Label(master=root, width=100)
@@ -129,10 +129,10 @@ if __name__ == '__main__':
     #DataStart
     DG = nx.DiGraph()
     datasetNames =[
-        ['1.  Arad [366]',366]     ,['2.  Bucharest', 0]   ,      ['3.  Craiova [160]', 160]  ,['4.  Dobreta [242]', 242] ,['5.  Eforie [161]',161],
-        ['6.  Fagaras [176]', 176] ,['7.  Giurgiu [77]', 77]    , ['8.  Hirsova [151]', 151]  ,['9.  Iasi [226]', 226]    ,['10. Lugoj [244]', 244],
-        ['11. Mehadia [241]', 241] ,['12. Neamt [234]', 234]     ,['13. Oradea [380]', 380]   ,['14. Pitesti [10]', 10]   ,['15. Ramnicu Vilcea [193]', 193],
-        ['16. Sibiu [253]', 253]   ,['17. Timisoara [392]', 392] ,['18. Urziceni [80]', 80]   ,['19. Vaslui [199]', 199]  ,['20. Zerind [374]', 374]
+        ['1. Arad',366]       ,['2. Bucharest', 0]    ,['3. Craiova', 160]    ,['4. Dobreta', 242]  ,['5. Eforie',161],
+        ['6. Fagaras ', 176]  ,['7. Giurgiu', 77]     ,['8. Hirsova', 151]    ,['9. Iasi', 226]     ,['10. Lugoj', 244],
+        ['11. Mehadia ', 241] ,['12. Neamt', 234]     ,['13. Oradea', 380]    ,['14. Pitest', 10]   ,['15. Ramnicu Vilcea', 193],
+        ['16. Sibiu ', 253]   ,['17. Timisoara', 392] ,['18. Urziceni', 80]   ,['19. Vaslui', 199]  ,['20. Zerind', 374]
     ]
     nr =[1  ,2  ,3  ,4  ,5  ,6  ,7  ,8  ,9  ,10 ,11 ,12 ,13 ,14 ,15 ,16 ,17 ,18 ,19 ,20 ]
 
@@ -162,7 +162,7 @@ if __name__ == '__main__':
 
     for x in range(20):
         name = datasetNames[x][0]
-        listTables.insert('end', datasetNames[x][0])
+        listTables.insert('end', datasetNames[x][0]+' ['+str(datasetNames[x][1])+']')
         i = 0
         for y in datasetCost[x]:
             if y != -1:
@@ -170,7 +170,7 @@ if __name__ == '__main__':
             i+=1
 
 
-    pos = nx.spring_layout(DG,fixed = None)
+    pos = nx.spring_layout(DG,scale=10.20)
     nx.draw_networkx_edge_labels(DG,pos,edge_labels=nx.get_edge_attributes(DG,'weight'),ax=a)
 
     nx.draw_networkx(DG, pos,font_size=16, with_labels=False,edge_color='g',ax=a)
