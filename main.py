@@ -54,7 +54,7 @@ def nextGraph():
 
                         if x != -1 :# and datasetNamesB[y][0] != previousNode (add this to if for more performance)
 
-                            DG.add_weighted_edges_from([(currentNode, datasetNamesB[y][0], x)],length=x)
+                            DG.add_weighted_edges_from([(currentNode, datasetNamesB[y][0], x)])
                             nx.draw_networkx_edge_labels(DG,pos,edge_labels=nx.get_edge_attributes(DG,'weight'),font_color='red',ax=a)
 
                             if datasetNamesB[y][0] == previousNode:
@@ -118,7 +118,7 @@ def resetGraph():
         nx.draw_networkx(DG, pos, ax=a,with_labels=False,edge_color='b')
         # for p in pos:  # raise text positions
         #     pos[p][1] += 0.07
-        nx.draw_networkx_labels(DG,pos,ax=a)
+        nx.draw_networkx_labels(DG,pos,font_size=10,ax=a)
         canvas.draw()
 
 def setTime():
@@ -204,7 +204,7 @@ if __name__ == '__main__':
     nx.draw_networkx(DG, pos,font_size=16, with_labels=False,edge_color='b',ax=a)
     # for p in pos:  # raise text positions
     #     pos[p][1] += 0.07
-    nx.draw_networkx_labels(DG,pos,ax=a)
+    nx.draw_networkx_labels(DG,pos,font_size=10,ax=a)
 
 
 
