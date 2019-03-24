@@ -37,37 +37,41 @@ def nextGraph():
                     description.config(text='Current Node-> ' +str(currentNode)+'\n' +'Next Node to choose-> ')
                     a.cla()
                     DG.clear()
+                    print('BADDDD')
                     DG.add_node(listTables.get(listTables.curselection()),rank=0)
                     nx.draw_networkx(DG, pos, ax=a )
                     a.axis('off')
                     canvas.draw()
-                    time.sleep(1)
+                    if SetWT == 1:
+                        time.sleep(1)
                     i+=1
                 else:
-                    nodeNumber = currentNode.split(". ")
+                    nodeNumber = currentNode.split(".")
 
                     y=0
 
                     for x in datasetCost[int(nodeNumber[0])-1]:
 
-                        if x != -1:
+                        if x != -1 :# and datasetNamesB[y][0] != previousNode (add this to if for more performance)
 
-                            DG.add_weighted_edges_from([(currentNode, datasetNames[y][0], x)],length=x)
+                            DG.add_weighted_edges_from([(currentNode, datasetNamesB[y][0], x)],length=x)
                             nx.draw_networkx_edge_labels(DG,pos,edge_labels=nx.get_edge_attributes(DG,'weight'),font_color='red',ax=a)
-                            if datasetNames[y][0] == previousNode:
+
+                            if datasetNamesB[y][0] == previousNode:
                                 edgeColorsAnimation.append('r')
                             else:
                                 edgeColorsAnimation.append('b')
 
-                            if nextNode[0][0] == 0 and datasetNames[y][0] != previousNode: #check if next node to choose allready exists
-                                nextNode = [[datasetNames[y][0],x+int(datasetNames[y][1])]]
+                            if nextNode[0][0] == 0 and datasetNamesB[y][0] != previousNode: #check if next node to choose allready exists
+                                nextNode = [[datasetNamesB[y][0],x+int(datasetNamesB[y][1])]]
                                 description.config(text=description.cget('text')+str(nextNode[0][0]+' Cost: '+str(nextNode[0][1])))
-                            elif x+int(datasetNames[y][1])< nextNode[0][1] and datasetNames[y][0] != previousNode: # choose the smallest cost node to bucharest
-                                nextNode = [[datasetNames[y][0],x+int(datasetNames[y][1])]]
+                            elif x+int(datasetNamesB[y][1])< nextNode[0][1] and datasetNamesB[y][0] != previousNode: # choose the smallest cost node to Bucharest
+                                nextNode = [[datasetNamesB[y][0],x+int(datasetNamesB[y][1])]]
                                 description.config(text=description.cget('text')+' > '+str(nextNode[0][0]+' Cost: '+str(nextNode[0][1])))
 
                             nx.draw_networkx(DG, pos, ax=a,edge_color=edgeColorsAnimation)
                             canvas.draw()
+
                             if SetWT == 1:
                                 time.sleep(1)
                         y+=1
@@ -80,6 +84,11 @@ def nextGraph():
 
                     nextNode=[[0,0]]
                     if 'Bucharest' in currentNode:
+                        DG.add_edges_from( [(currentNode,previousNode)] )
+                        # edgeColorsAnimation.pop()
+                        edgeColorsAnimation.append('r')
+                        nx.draw_networkx(DG, pos, ax=a,edge_color=edgeColorsAnimation)
+                        canvas.draw()
                         description.config(text=description.cget('text')+'Finish! ')
 
 
@@ -98,14 +107,14 @@ def resetGraph():
         DG.clear()
         a.axis('off')
         for x in range(20):
-            name = datasetNames[x][0]
+            name = datasetNamesB[x][0]
 
             i = 0
             for y in datasetCost[x]:
                 if y != -1:
-                    DG.add_weighted_edges_from([(name, datasetNames[i][0], y)])
+                    DG.add_weighted_edges_from([(name, datasetNamesB[i][0], y)])
                 i+=1
-        nx.draw_networkx_edge_labels(DG,pos,edge_labels=nx.get_edge_attributes(DG,'weight'),edge_color='r',ax=a)
+        nx.draw_networkx_edge_labels(DG,pos,edge_labels=nx.get_edge_attributes(DG,'weight'),edge_color='b',font_color='red',ax=a)
         nx.draw_networkx(DG, pos, ax=a,with_labels=False,edge_color='b')
         # for p in pos:  # raise text positions
         #     pos[p][1] += 0.07
@@ -142,9 +151,15 @@ if __name__ == '__main__':
 
     #DataStart
     DG = nx.DiGraph()
-    datasetNames =[
-        ['1.  Arad [366]',366]     ,['2.  Bucharest', 0]   ,      ['3.  Craiova [160]', 160]  ,['4.  Dobreta [242]', 242] ,['5.  Eforie [161]',161],
-        ['6.  Fagaras [176]', 176] ,['7.  Giurgiu [77]', 77]    , ['8.  Hirsova [151]', 151]  ,['9.  Iasi [226]', 226]    ,['10. Lugoj [244]', 244],
+    # datasetNames =[
+    #     ['1.  Arad ',366]     ,['2.  Bucharest', 0]    ,['3.  Craiova ', 160]   ,['4.  Dobreta ', 242] ,['5.  Eforie ',161],
+    #     ['6.  Fagaras ', 176] ,['7.  Giurgiu ', 77]    ,['8.  Hirsova ', 151]   ,['9.  Iasi ', 226]    ,['10. Lugoj ', 244],
+    #     ['11. Mehadia ', 241] ,['12. Neamt ', 234]     ,['13. Oradea ', 380]    ,['14. Pitesti ', 10]  ,['15. Ramnicu Vilcea ', 193],
+    #     ['16. Sibiu ', 253]   ,['17. Timisoara ', 392] ,['18. Urziceni ', 80]   ,['19. Vaslui ', 199]  ,['20. Zerind ', 374]
+    # ]
+    datasetNamesB =[
+        ['1.  Arad [366]',366]     ,['2.  Bucharest', 0]         ,['3.  Craiova [160]', 160]  ,['4.  Dobreta [242]', 242] ,['5.  Eforie [161]',161],
+        ['6.  Fagaras [176]', 176] ,['7.  Giurgiu [77]', 77]     ,['8.  Hirsova [151]', 151]  ,['9.  Iasi [226]', 226]    ,['10. Lugoj [244]', 244],
         ['11. Mehadia [241]', 241] ,['12. Neamt [234]', 234]     ,['13. Oradea [380]', 380]   ,['14. Pitesti [10]', 10]   ,['15. Ramnicu Vilcea [193]', 193],
         ['16. Sibiu [253]', 253]   ,['17. Timisoara [392]', 392] ,['18. Urziceni [80]', 80]   ,['19. Vaslui [199]', 199]  ,['20. Zerind [374]', 374]
     ]
@@ -175,21 +190,22 @@ if __name__ == '__main__':
 
 
     for x in range(20):
-        name = datasetNames[x][0]
-        listTables.insert('end', datasetNames[x][0])
+        name = datasetNamesB[x][0]
+        listTables.insert('end', datasetNamesB[x][0]) #If you want nodes without [cost] replace all file  datasetNamesB with datasetNamesA
         i = 0
         for y in datasetCost[x]:
             if y != -1:
-                DG.add_weighted_edges_from([(name, datasetNames[i][0], y)])
+                DG.add_weighted_edges_from([(name, datasetNamesB[i][0], y)],pos=(53.5672, 10.0285))
             i+=1
 
 
-    pos = nx.spring_layout(DG,scale=5.0)
-    nx.draw_networkx_edge_labels(DG,pos,edge_labels=nx.get_edge_attributes(DG,'weight'),ax=a)
+    pos = nx.spring_layout(DG)
+    nx.draw_networkx_edge_labels(DG,pos,edge_labels=nx.get_edge_attributes(DG,'weight'),font_color='red',ax=a)
     nx.draw_networkx(DG, pos,font_size=16, with_labels=False,edge_color='b',ax=a)
     # for p in pos:  # raise text positions
     #     pos[p][1] += 0.07
     nx.draw_networkx_labels(DG,pos,ax=a)
+
 
 
 
